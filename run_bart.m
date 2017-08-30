@@ -33,6 +33,15 @@ for i = 1:length(file_list)
     end
 end
 
+%align to MNI space for each subject when creating the dipole grid
+cfg                 = [];
+cfg.grid.warpmni   = 'yes';
+cfg.grid.template  = sourcemodel;
+cfg.grid.nonlinear = 'yes'; 
+cfg.mri            = mri;
+grid = ft_prepare_sourcemodel(cfg);
+
+
 foi = [3,7];
 foilim = [3,30];
 for i = 1:length(filename_list)
@@ -41,7 +50,7 @@ for i = 1:length(filename_list)
         group_name,id_type,net_type,pathname,filename);
         for j = 1:length(category_names)
         %get only one condition from one subject
-            result(i,j) = use_bf(j,eeg,mri,vol,sourcemodel,elec_realigned,foi,foilim);
+            result(i,j) = use_bf(j,eeg,mri,vol,grid,elec_realigned,foi,foilim);
         end
 end
 

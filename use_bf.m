@@ -1,4 +1,4 @@
-function result = use_bf(j,eeg,mri,vol,sourcemodel,elec_realigned,foi,foilim)
+function result = use_bf(j,eeg,mri,vol,grid,elec_realigned,foi,foilim)
 
 [data_bsl,data_exp,data_cmb] = bf_get_data(eeg,1,j,elec_realigned);
 
@@ -22,19 +22,18 @@ freq_exp = ft_freqanalysis(cfg,data_exp);
 freq_exp.elec = data_exp.elec;
 freq_exp.info = data_exp.info;
 
-%calculate source
-%foi = [4,7];
+%source estimate
 cfg              = []; 
 cfg.method       = 'dics';
 cfg.dics.keepfilter='yes';
 cfg.frequency    = foi;  
-cfg.grid         = sourcemodel; 
+cfg.grid         = grid; 
 cfg.headmodel          = vol;
 cfg.dics.projectnoise = 'yes';
 cfg.dics.lambda       = 0;
 source_cmb = ft_sourceanalysis(cfg, freq_cmb);
 source_cmb.info = freq_cmb.info;
-        
+
 cfg.grid.filter  = source_cmb.avg.filter;
 source_bsl       = ft_sourceanalysis(cfg, freq_bsl);
 source_exp       = ft_sourceanalysis(cfg, freq_exp);
